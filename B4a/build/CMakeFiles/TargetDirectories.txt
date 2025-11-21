@@ -1,0 +1,3 @@
+/home/mihnwq/SecondGeantProject/B4a/build/CMakeFiles/exampleB4a.dir
+/home/mihnwq/SecondGeantProject/B4a/build/CMakeFiles/edit_cache.dir
+/home/mihnwq/SecondGeantProject/B4a/build/CMakeFiles/rebuild_cache.dir

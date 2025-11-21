@@ -1,0 +1,3 @@
+/home/mihnwq/SecondGeantProject/cmake-build-debug/CMakeFiles/SecondGeantProject.dir
+/home/mihnwq/SecondGeantProject/cmake-build-debug/CMakeFiles/edit_cache.dir
+/home/mihnwq/SecondGeantProject/cmake-build-debug/CMakeFiles/rebuild_cache.dir
