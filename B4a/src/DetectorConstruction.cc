@@ -736,7 +736,9 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
 
     physCapDet2 = new G4PVPlacement(0,G4ThreeVector(0.*cm,Ly-1.*mm,-50.06*cm), logicCapDet,"physCapDet2", logicWorld, true, 1, true);//between the end of the optical fiber and the SiPM
 
+  //physCapDet1 = new G4PVPlacement(0,G4ThreeVector(0.*cm,Ly-1.*mm,48*cm), logicCapDet,"physCapDet1", logicWorld, true, 0, true);//the z component of the Vector can be changed to specify the distance
 
+    //physCapDet2 = new G4PVPlacement(0,G4ThreeVector(0.*cm,Ly-1.*mm,-48*cm), logicCapDet,"physCapDet2", logicWorld, true, 1, true);//between the
 
 
     Scin_FullBox = new G4Box("Scin_FullBox", Lx , Ly , Lz);

@@ -1,4 +1,4 @@
-Cannot generate into /home/mihnwq/SecondGeantProject/cmake-build-debug
-It was created with incompatible generator 'Unix Makefiles'
-
-Please either delete it manually or select another generation directory
+/snap/clion/401/bin/cmake/linux/x64/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/snap/clion/401/bin/ninja/linux/x64/ninja -DGeant4_DIR=/home/mihnwq/Geant4/geant4-v11.3.2-install/lib/cmake/Geant4 -G Ninja -S /home/mihnwq/SecondGeantProject -B /home/mihnwq/SecondGeantProject/cmake-build-debug
+-- Configuring done (0.3s)
+-- Generating done (0.0s)
+-- Build files have been written to: /home/mihnwq/SecondGeantProject/cmake-build-debug

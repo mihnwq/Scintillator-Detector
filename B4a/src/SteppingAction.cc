@@ -30,98 +30,72 @@
 #include "SteppingAction.hh"
 
 #include <G4OpticalPhoton.hh>
+#include <unordered_set>
 
 #include "DetectorConstruction.hh"
 #include "EventAction.hh"
+#include "EventCounter.hh"
 #include "G4LogicalVolume.hh"
 #include "G4RunManager.hh"
 #include "G4Step.hh"
 #include "globals.hh"
 
+#include "G4MuonMinus.hh"
+#include "G4MuonPlus.hh"
+#include "PhotonMuonHelper.hh"
+
 
 using namespace B4;
-
+extern PhotonMuonHelper gPhotonMuonHelper;
 namespace B4a
 {
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
+
+
 SteppingAction::SteppingAction(const DetectorConstruction* detConstruction,
                                EventAction* eventAction)
-  : fDetConstruction(detConstruction), fEventAction(eventAction)
+  :fDetConstruction(detConstruction), fEventAction(eventAction)
 {}
+
+  EventCounter photonCpunter;
+
+
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
 void SteppingAction::UserSteppingAction(const G4Step* step)
 {
-  /*
-  // Collect energy and track length step by step
-
-  // get volume of the current step
-    if (!fScoringVolume) {
-        const auto detConstruction = static_cast<const DetectorConstruction*>(
-          G4RunManager::GetRunManager()->GetUserDetectorConstruction());
-        fScoringVolume = detConstruction->GetScoringVolume();
-    }
-
-    // get volume of the current step
-    G4LogicalVolume* volume =
-      step->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetLogicalVolume();
-
-    // check if we are in scoring volume
-    if (volume != fScoringVolume) return;
-
-    // collect energy deposited in this step
-    G4double edepStep = step->GetTotalEnergyDeposit();
-    fEventAction->AddEdep(edepStep);
-
-  // 1. Obținem volumul în care se află particula
-  auto vol= step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
-
-  // Verificăm dacă volumul există (pentru siguranță)
-  if (!vol) return;
-
-  // 2. Verificăm dacă particula este în detectorul tău ("physCapDet1" sau "physCapDet2")
-  // Folosim un check parțial pe nume ca să le prindem pe ambele
-  G4String volName = vol->GetName();
-
-  if (volName.contains("physCapDet") )
-  {
-    // 3. Verificăm dacă particula este un Foton Optic
-    if (step->GetTrack()->GetDefinition() == G4OpticalPhoton::OpticalPhotonDefinition())
-    {
-      // 4. Verificăm dacă fotonul ABIA A INTRAT în volum (Boundary)
-      // Asta previne numărarea de mai multe ori a aceluiași foton
-      // dacă face mai mulți pași în interiorul detectorului.
-      if (step->GetPreStepPoint()->GetStepStatus() == fGeomBoundary)
-      {
-        // Luăm energia fotonului
-        G4double energy = step->GetTrack()->GetKineticEnergy();
-
-        // Trimitem datele către EventAction
-        fEventAction->AddPhotonData(energy);
-
-        // OPȚIONAL: Oprim fotonul aici (simulăm absorbția totală)
-        // Dacă nu faci asta, fotonul ar putea ieși și intra iar.
-        step->GetTrack()->SetTrackStatus(fStopAndKill);
-      }
-    }
-  }*/
 
   auto vol = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
 
-  // Verificăm dacă volumul există (pentru siguranță)
+
   //if (!vol) return;
 
   G4String volName = vol->GetName();
-  //G4cout << volName;
-  // ====================================================================
-  // LOGICA PENTRU FOTONI OPTICI (DEBUG + SALVARE)
-  // ====================================================================
 
-  // Verificăm dacă particula este un Foton Optic
-  if (step->GetTrack()->GetDefinition() == G4OpticalPhoton::OpticalPhotonDefinition())
+
+
+
+  if ((step->GetTrack()->GetDefinition() == G4MuonPlus::MuonPlusDefinition() ||
+      step->GetTrack()->GetDefinition() == G4MuonMinus::MuonMinusDefinition())
+      && step->GetPreStepPoint()->GetStepStatus() == fGeomBoundary)
+  {
+
+    G4int trackID = step->GetTrack()->GetTrackID();
+    if (gPhotonMuonHelper.muonsAlreadyHit.find(trackID) == gPhotonMuonHelper.muonsAlreadyHit.end())
+    {
+      gPhotonMuonHelper.muonsAlreadyHit.insert(trackID);
+      G4ThreeVector pos = step->GetPreStepPoint()->GetPosition();
+      photonCpunter.AddMuon(pos);
+      G4cout << "Muon first hit a volume at: " << pos << " TrackID: " << trackID << G4endl;
+    }
+
+
+     // EventCounter::AddMuonHit(muonHitPos);
+
+  }else if (step->GetTrack()->GetDefinition() == G4OpticalPhoton::OpticalPhotonDefinition())
   {
     // --- SECVENȚA DE DEBUG SOLICITATĂ ---
     // Printează o singură dată ca să știm că există măcar UN foton în toată simularea
@@ -131,29 +105,81 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
       mesajAfisat = true;
     }
 
-    // --- VERIFICARE DETECTOR ---
-    // Verificăm dacă suntem în detectorii tăi ("physCapDet1" sau "physCapDet2")
-   // G4cout << volName << std::endl;
+
     if (volName.find("physCapDet") != std::string::npos)
     {
-      // Print de debug pentru fiecare lovitură
-      G4cout << "--> Foton lovit in detector: " << volName << G4endl;
+      if (step->GetPreStepPoint()->GetStepStatus() == fGeomBoundary)
+      {
 
-      // --- LOGICA DE SALVARE A DATELOR ---
-      // Verificăm dacă fotonul ABIA A INTRAT în volum (Boundary)
-      // Ca să nu îl numărăm de două ori dacă face pași mici în interior
-      if (step->GetPreStepPoint()->GetStepStatus() == fGeomBoundary) {
-        // Luăm energia fotonului
+
         G4double energy = step->GetTrack()->GetKineticEnergy();
+        G4ThreeVector startingPosition = step->GetTrack()->GetVertexPosition();
 
-        G4int count = 0;
-        if (energy>0)
-          count++;
-        // Trimitem datele către EventAction
-        // (Asigură-te că ai metoda AddPhotonData în EventAction.hh)
-        fEventAction->AddPhotonData(energy);
-       // fEventAction->AddPhotonData(count);
-        // Oprim fotonul aici (simulăm absorbția totală de către SiPM)
+        const G4Track* photon = step->GetTrack();
+        G4int parentID = photon->GetParentID();
+
+        G4ThreeVector muonStartPos;
+        bool foundMuon = false;
+
+        while(parentID != 0)
+        {
+
+          if(gPhotonMuonHelper.isMuonFamily[parentID])
+          {
+
+
+            auto it = gPhotonMuonHelper.muonStartMap.find(parentID);
+            if(it != gPhotonMuonHelper.muonStartMap.end())
+            {
+              muonStartPos = it->second;
+              foundMuon = true;
+            }
+            break;
+          }
+
+          auto itParent = gPhotonMuonHelper.parentMap.find(parentID);
+         // G4cout << "The current parent is:" <<itParent->second << G4endl;
+          if(itParent == gPhotonMuonHelper.parentMap.end())
+            break;
+
+          parentID = itParent->second;
+
+        }
+
+
+
+        //G4cout<<"Was muon found? : "<<parentID<<G4endl;
+
+
+
+
+
+
+        // Photon hit position
+      /*  G4ThreeVector hitPosition = step->GetPreStepPoint()->GetPosition();
+        G4cout << "Photon hit detector at: " << hitPosition << G4endl;*/
+
+        //G4cout << "Photon starting position" << startingPosition<<G4endl;
+
+        if(foundMuon) {
+          G4cout<<"Muon found for this photon!"<<G4endl;
+          photonCpunter.IncreasePhotonAtMuon(parentID);
+        }
+        else
+          G4cout << "No muon found in photon ancestry!" << G4endl;
+
+      //
+
+        photonCpunter.AddHit();
+
+        G4cout<<"Photon Hit the volume and escaped!"<<G4endl;
+
+        photonCpunter.AddEnergy(energy);
+        photonCpunter.AddVector(startingPosition);
+
+
+
+
         step->GetTrack()->SetTrackStatus(fStopAndKill);
       }
     }

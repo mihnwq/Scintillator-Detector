@@ -33,6 +33,7 @@
 #include "PrimaryGeneratorAction.hh"
 #include "RunAction.hh"
 #include "SteppingAction.hh"
+#include "TrackingAction.hh"
 
 using namespace B4;
 
@@ -59,8 +60,9 @@ void ActionInitialization::Build() const
   SetUserAction(new PrimaryGeneratorAction);
   SetUserAction(new RunAction);
   auto eventAction = new EventAction;
-  SetUserAction(eventAction);
   SetUserAction(new SteppingAction(fDetConstruction, eventAction));
+  SetUserAction(eventAction);
+  SetUserAction(new TrackingAction());
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......

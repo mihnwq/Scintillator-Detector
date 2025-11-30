@@ -30,9 +30,14 @@
 #ifndef B4aEventAction_h
 #define B4aEventAction_h 1
 
+#include <G4ThreeVector.hh>
+#include <vector>
+#include <CLHEP/Units/SystemOfUnits.h>
+
 #include "G4UserEventAction.hh"
 #include "globals.hh"
 
+class G4GenericAnalysisManager;
 class G4Event;
 
 
@@ -52,21 +57,16 @@ class EventAction : public G4UserEventAction
     EventAction() = default;
     ~EventAction() override = default;
 
-    void BeginOfEventAction(const G4Event* event) override;
+ //   void BeginOfEventAction(const G4Event* event) override;
     void EndOfEventAction(const G4Event* event) override;
+    void BeginOfEventAction(const G4Event *anEvent) override;
 
     void AddAbs(G4double de, G4double dl);
     void AddGap(G4double de, G4double dl);
+    void AddVector(G4int , G4int, G4int, G4GenericAnalysisManager* , std::vector<G4ThreeVector> );
 
 
   void AddEdep(G4double edep) { fEdep += edep; }
-  /*void AddPhot1() { fPhot1Count++; }
-  void AddPhot2() { fPhot2Count++; }*/
-  void AddPhotonData(G4double energy)
-  {
-    fPhotonCount++;
-    fPhotonEnergy += energy;
-  }
 
   private:
     G4double fEnergyAbs = 0.;
@@ -74,8 +74,6 @@ class EventAction : public G4UserEventAction
     G4double fTrackLAbs = 0.;
     G4double fTrackLGap = 0.;
     G4double fEdep = 0.;
-    G4int fPhotonCount = 0;//am introdus asta pentru a contoriza numarul de fotoni fara a folosi sensitive detector
-    G4double fPhotonEnergy = 0.;
 
 };
 

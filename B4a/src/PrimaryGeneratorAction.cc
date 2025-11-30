@@ -50,6 +50,9 @@
 #include <cmath>
 #include<cstring>
 #include<numbers>
+
+#include "EventCounter.hh"
+
 namespace B4
 {
 
@@ -61,6 +64,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
   CLHEP::HepRandom::setTheSeed(seed * G4UniformRand());
 
   G4int n_particle = 10;
+  EventCounter::SetMaxMuons(n_particle);
   fParticleGun = new G4ParticleGun(n_particle);
 
   // default particle kinematic

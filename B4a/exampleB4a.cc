@@ -27,6 +27,8 @@
 /// \file exampleB4a.cc
 /// \brief Main program of the B4a example
 
+#include <G4AnalysisManager.hh>
+
 #include "ActionInitialization.hh"
 #include "DetectorConstruction.hh"
 #include "FTFP_BERT.hh"
@@ -126,6 +128,7 @@ int main(int argc, char** argv)
   physicsList->RegisterPhysics(opticalPhysics);
 
   runManager->SetUserInitialization(physicsList);
+
 
 
   auto actionInitialization = new B4a::ActionInitialization(detConstruction);

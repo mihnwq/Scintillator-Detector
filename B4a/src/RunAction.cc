@@ -68,23 +68,33 @@ RunAction::RunAction()
 
   // Creating ntuple
   //
-  analysisManager->CreateNtuple("B4", "Edep and TrackL");
+  analysisManager->CreateNtuple("B4", "Event Summary");
+
   analysisManager->CreateNtupleDColumn("Eabs");
   analysisManager->CreateNtupleDColumn("Egap");
   analysisManager->CreateNtupleDColumn("Labs");
   analysisManager->CreateNtupleDColumn("Lgap");
 
- // analysisManager->FillNtupleDColumn(3, fTrackLGap);
-
-  // ADAUGĂ ACESTE LINII:
-  // Coloana 4 pentru numărul de fotoni (Integer)
-  analysisManager->CreateNtupleIColumn("PhotonCount");
-  // Coloana 5 pentru energia totală a fotonilor (Double)
+  analysisManager->CreateNtupleDColumn("PhotonCount");
   analysisManager->CreateNtupleDColumn("PhotonEnergy");
 
-  //analysisManager->AddNtupleRow(); //mai vedem
+  analysisManager->CreateNtupleDColumn("MaxPhotonsForMuon");
+  analysisManager->CreateNtupleDColumn("GreediestMuonX");
+  analysisManager->CreateNtupleDColumn("GreediestMuonY");
+  analysisManager->CreateNtupleDColumn("GreediestMuonZ");
 
-  analysisManager->FinishNtuple();
+  analysisManager->FinishNtuple(0);
+
+
+  // Ntuple 1 – Photon positions
+  analysisManager->CreateNtuple("PhotonData", "Photon positions");
+
+  analysisManager->CreateNtupleIColumn("eventID");   // <-- IMPORTANT!!
+  analysisManager->CreateNtupleDColumn("px");
+  analysisManager->CreateNtupleDColumn("py");
+  analysisManager->CreateNtupleDColumn("pz");
+
+  analysisManager->FinishNtuple(1);
 }
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
