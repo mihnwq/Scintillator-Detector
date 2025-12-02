@@ -93,15 +93,16 @@ void EventAction::EndOfEventAction(const G4Event* event)
   G4int maxPhotonsForMuon = EventCounter::GetMaxPhotonForMuon();
   G4ThreeVector maxMuonWithPhotonsPosition = EventCounter::GetGreediestMeuonPosition();
 
-  G4cout<<"Here we have the maxPhotons for muon: " << maxPhotonsForMuon << " With his initial position: "<< maxMuonWithPhotonsPosition << G4endl;
+ // G4cout<<"Here we have the maxPhotons for muon: " << maxPhotonsForMuon << " With his initial position: "<< maxMuonWithPhotonsPosition << G4endl;
 
 
   //G4cout<<"Photon count: "<<photonCount<<" have been detected "<< "with energy levels on: "<< energyCount<<G4endl;
 
 
-
-
   analysisManager->FillNtupleDColumn(0,4, photonCount);
+
+  G4cout<<"Are this many Photons this run:" << EventCounter::GetCounter()<<G4endl;
+
   analysisManager->FillNtupleDColumn(0,5, energyCount);
 
   analysisManager->FillNtupleDColumn(0,6, maxPhotonsForMuon);

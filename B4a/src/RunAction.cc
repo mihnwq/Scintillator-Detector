@@ -68,7 +68,7 @@ RunAction::RunAction()
 
   // Creating ntuple
   //
-  analysisManager->CreateNtuple("B4", "Event Summary");
+  analysisManager->CreateNtuple("General Data", "Event Summary");
 
   analysisManager->CreateNtupleDColumn("Eabs");
   analysisManager->CreateNtupleDColumn("Egap");

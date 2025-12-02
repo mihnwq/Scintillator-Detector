@@ -14,7 +14,7 @@ void TrackingAction::PreUserTrackingAction(const G4Track* track)
 
     gPhotonMuonHelper.parentMap[trackID] = parentID;
 
-
+//meun -> electron -> .. ->photonu
     auto def = track->GetDefinition();
     if(def == G4MuonMinus::MuonMinusDefinition() ||
        def == G4MuonPlus::MuonPlusDefinition())

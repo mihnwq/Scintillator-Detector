@@ -75,6 +75,8 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
 
   G4String volName = vol->GetName();
 
+  G4cout<<"Volume "<<volName<<"\n";
+
 
 
 
@@ -106,7 +108,8 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
     }
 
 
-    if (volName.find("physCapDet") != std::string::npos)
+   // if (volName.find("physCapDet") != std::string::npos)
+    if (volName.find("solidCapDet") != std::string::npos)
     {
       if (step->GetPreStepPoint()->GetStepStatus() == fGeomBoundary)
       {
@@ -162,7 +165,7 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
         //G4cout << "Photon starting position" << startingPosition<<G4endl;
 
         if(foundMuon) {
-          G4cout<<"Muon found for this photon!"<<G4endl;
+         // G4cout<<"Found Muon for this photon!"<<G4endl;
           photonCpunter.IncreasePhotonAtMuon(parentID);
         }
         else
@@ -172,12 +175,10 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
 
         photonCpunter.AddHit();
 
-        G4cout<<"Photon Hit the volume and escaped!"<<G4endl;
+       // G4cout<<"Photon Hit the volume and escaped!"<<G4endl;
 
         photonCpunter.AddEnergy(energy);
         photonCpunter.AddVector(startingPosition);
-
-
 
 
         step->GetTrack()->SetTrackStatus(fStopAndKill);
