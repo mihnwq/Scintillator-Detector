@@ -106,27 +106,21 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
     G4VPhysicalVolume* prePV  = pre->GetPhysicalVolume();
     G4VPhysicalVolume* postPV = post->GetPhysicalVolume();
 
-   // if (volName.find("physCapDet") != std::string::npos)
-   // {
-      //if (step->GetPreStepPoint()->GetStepStatus() == fGeomBoundary)
-     // {
+   if (volName.find("physCapDet") != std::string::npos)
+    {
+      if (step->GetPreStepPoint()->GetStepStatus() == fGeomBoundary)
+
 
     /*if (postPV && postPV->GetName().find("physCapDet") != std::string::npos &&
         post->GetStepStatus() == fGeomBoundary)*/
-    if (pre->GetStepStatus() == fGeomBoundary || post->GetStepStatus() == fGeomBoundary)
+   // if (pre->GetStepStatus() == fGeomBoundary || post->GetStepStatus() == fGeomBoundary)
       {
       G4double energy = step->GetTrack()->GetKineticEnergy();
       G4ThreeVector startingPosition = step->GetTrack()->GetVertexPosition();
 
       const G4Track* photon = step->GetTrack();
-      const G4int trackID = photon->GetTrackID();
-
-      if (gPhotonMuonHelper.hasPhotonHit[trackID])
-        return;
-
       G4int parentID = photon->GetParentID();
 
-      G4ThreeVector muonStartPos;
       bool foundMuon = false;
 
       while(parentID != 0)
@@ -139,14 +133,13 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
           auto it = gPhotonMuonHelper.muonStartMap.find(parentID);
           if(it != gPhotonMuonHelper.muonStartMap.end())
           {
-            muonStartPos = it->second;
+
             foundMuon = true;
           }
           break;
         }
 
         auto itParent = gPhotonMuonHelper.parentMap.find(parentID);
-        // G4cout << "The current parent is:" <<itParent->second << G4endl;
         if(itParent == gPhotonMuonHelper.parentMap.end())
           break;
 
@@ -173,8 +166,7 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
         // G4cout<<"Found Muon for this photon!"<<G4endl;
         photonCpunter.IncreasePhotonAtMuon(parentID);
       }
-      else
-       // G4cout << "No muon found in photon ancestry!" << G4endl;
+
 
       //
 
@@ -185,12 +177,12 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
       photonCpunter.AddEnergy(energy);
       photonCpunter.AddVector(startingPosition);
 
-      gPhotonMuonHelper.hasPhotonHit[trackID] = true;
 
 
-      //step->GetTrack()->SetTrackStatus(fStopAndKill);
+
+      step->GetTrack()->SetTrackStatus(fStopAndKill);
     }
-      //}
+
     }
   }
 
@@ -199,4 +191,4 @@ void SteppingAction::UserSteppingAction(const G4Step* step)
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo......
 
-//}  // namespace B4a
+}  // namespace B4a

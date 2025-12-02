@@ -731,15 +731,14 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     physCladding = new G4PVPlacement(0,G4ThreeVector(0.,Ly-1.*mm,0.*m),logicCladding,"physCladding",logicWorld,false,0,true);
  
 
-    physCapDet1 = new G4PVPlacement(0,G4ThreeVector(0.*cm,Ly-1.*mm,50.06*cm), logicCapDet,"physCapDet1", logicWorld, true, 0, true);//the z component of the Vector can be changed to specify the distance
+    //physCapDet1 = new G4PVPlacement(0,G4ThreeVector(0.*cm,Ly-1.*mm,50.06*cm), logicCapDet,"physCapDet1", logicWorld, true, 0, true);//the z component of the Vector can be changed to specify the distance
 
-    physCapDet2 = new G4PVPlacement(0,G4ThreeVector(0.*cm,Ly-1.*mm,-50.06*cm), logicCapDet,"physCapDet2", logicWorld, true, 1, true);//between the end of the optical fiber and the SiPM
+   // physCapDet2 = new G4PVPlacement(0,G4ThreeVector(0.*cm,Ly-1.*mm,-50.06*cm), logicCapDet,"physCapDet2", logicWorld, true, 1, true);//between the end of the optical fiber and the SiPM
 
 
 
-  //physCapDet1 = new G4PVPlacement(0,G4ThreeVector(0.*cm,Ly-1.*mm,48*cm), logicCapDet,"physCapDet1", logicWorld, true, 0, true);//the z component of the Vector can be changed to specify the distance
-
-    //physCapDet2 = new G4PVPlacement(0,G4ThreeVector(0.*cm,Ly-1.*mm,-48*cm), logicCapDet,"physCapDet2", logicWorld, true, 1, true);//between the
+  physCapDet1 = new G4PVPlacement(0,G4ThreeVector(0.*cm,Ly-1.*mm,48*cm), logicCapDet,"physCapDet1", logicWorld, true, 0, true);//the z component of the Vector can be changed to specify the distance
+    physCapDet2 = new G4PVPlacement(0,G4ThreeVector(0.*cm,Ly-1.*mm,-48*cm), logicCapDet,"physCapDet2", logicWorld, true, 1, true);//between the
 
 
     Scin_FullBox = new G4Box("Scin_FullBox", Lx , Ly , Lz);
