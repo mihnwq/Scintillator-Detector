@@ -49,7 +49,7 @@ public:
 
      muonData[index].first++;
 
-        G4cout<<"The index "<<index << " Has increased to: "<<muonData[index].first<<G4endl;
+       // G4cout<<"The index "<<index << " Has increased to: "<<muonData[index].first<<G4endl;
 
      G4int currentCOunt = muonData[index].first;
 

@@ -10,11 +10,13 @@ public:
     std::unordered_map<G4int, G4int> parentMap;            // any trackID → parentID
     std::unordered_map<G4int, bool> isMuonFamily;
     std::unordered_set<G4int> muonsAlreadyHit;
+    std::unordered_map<G4int, bool> hasPhotonHit;
 
     void Clear() {
         muonStartMap.clear();
         parentMap.clear();
         isMuonFamily.clear();
         muonsAlreadyHit.clear();
+        hasPhotonHit.clear();
     }
 };
