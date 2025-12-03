@@ -11,6 +11,7 @@ public:
     std::unordered_map<G4int, bool> isMuonFamily;
     std::unordered_set<G4int> muonsAlreadyHit;
     std::unordered_map<G4int, bool> hasPhotonHit;
+    std::unordered_map<int, G4int*> muonPtr;
 
     void Clear() {
         muonStartMap.clear();
@@ -18,5 +19,10 @@ public:
         isMuonFamily.clear();
         muonsAlreadyHit.clear();
         hasPhotonHit.clear();
+
+        /*for (auto& kv : muonPtr)
+            delete kv.second;*/
+
+        muonPtr.clear();
     }
 };

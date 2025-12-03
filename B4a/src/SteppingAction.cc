@@ -88,7 +88,7 @@ namespace B4a {
       if (gPhotonMuonHelper.muonsAlreadyHit.find(trackID) == gPhotonMuonHelper.muonsAlreadyHit.end())
       {
         gPhotonMuonHelper.muonsAlreadyHit.insert(trackID);
-        G4ThreeVector pos = step->GetPreStepPoint()->GetPosition();
+        G4ThreeVector pos = step->GetPreStepPoint()->GetPosition(); ///This too
         photonCpunter.AddMuon(pos);
         G4cout << "Muon first hit a volume at: " << pos << " TrackID: " << trackID << G4endl;
       }
@@ -119,7 +119,7 @@ namespace B4a {
 
           bool foundMuon = false;
 
-          while(parentID != 0)
+        /*  while(parentID != 0)
           {
 
             if(gPhotonMuonHelper.isMuonFamily[parentID])
@@ -138,18 +138,22 @@ namespace B4a {
 
             parentID = itParent->second;
 
-          }
+          }*/
 
 
 
           //G4cout<<"Was muon found? : "<<parentID<<G4endl;
 
 
-          if(foundMuon) {
+        /*  if(foundMuon) {
             // G4cout<<"Found Muon for this photon!"<<G4endl;
             photonCpunter.IncreasePhotonAtMuon(parentID);
           }
+*/
+          G4int* muonFather = gPhotonMuonHelper.muonPtr[photon->GetTrackID()];
 
+          if (muonFather != nullptr)
+            G4cout<<"Found Muon for this photon! " <<*gPhotonMuonHelper.muonPtr[photon->GetTrackID()]<< G4endl;
 
           //
 
