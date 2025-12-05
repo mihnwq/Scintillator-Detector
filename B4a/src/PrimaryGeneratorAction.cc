@@ -87,21 +87,28 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
 
 ///G4ThreeVector offset = G4ThreeVector(0.01, 0.09, 0.01);
 
-void ParticleSourcePrinicpal(G4ParticleGun* fParticleGun)
+/*void ParticleSourcePrinicpal(G4ParticleGun* fParticleGun)
 {
     G4double PI = acos(-1);
-   
+
     G4double x, y, z, x1, y1, z1;
-    
+
     G4double phi, theta;
 
+    G4double bar_x = 100.0 * cm;
+    G4double bar_y = 1.0 * cm;
+    G4double bar_halfLength = 50.0 * cm;
+
+    G4double z_hit = (2*G4UniformRand() - 1) * bar_halfLength;
+
+    G4ThreeVector target(bar_x, bar_y, z_hit);
 
     x1 = (G4UniformRand() - 0.5) * 2.5 * cm;
     y1 = 0.5 * cm;
-    z1 = (G4UniformRand() - 0.5) * 100. *cm ; 
+    z1 = (G4UniformRand() - 0.5) * 100. *cm ;
 
     phi = G4UniformRand() * PI * 2;
-    
+
     theta = G4UniformRand() * PI / 2;
 
     x= x1 + 10 * cm * sin(theta) * cos(phi);
@@ -114,7 +121,7 @@ void ParticleSourcePrinicpal(G4ParticleGun* fParticleGun)
 
     fParticleGun->SetParticleEnergy(energy * GeV);
 
-    G4ThreeVector mom(x1-x,y1-y,z1-z); //checked
+    G4ThreeVector mom(x1 - x,y1 - y,z1 - z); //checked
 
     G4ThreeVector pos(x, y, z);
     G4long seed = time(0);
@@ -135,7 +142,63 @@ void ParticleSourcePrinicpal(G4ParticleGun* fParticleGun)
     man->FillNtupleDColumn(0,2, y1);
     man->FillNtupleDColumn(0,3, z1);
 
+}*/
+  void ParticleSourcePrinicpal(G4ParticleGun* fParticleGun)
+{
+
+    const G4double PI = acos(-1.0);
+    G4double x, y, z, x1, y1, z1;
+    G4double phi, theta;
+
+
+    const G4double Ly = 0.5 * cm;
+    const G4double bar_halfLength = 50.05 * cm;
+    const G4ThreeVector bar_start(0.0*cm, Ly - 1.0*mm, -bar_halfLength);
+    const G4ThreeVector bar_end  (0.0*cm, Ly - 1.0*mm,  bar_halfLength);
+
+
+    G4double R = 100*cm;
+
+    phi   = 2.0 * M_PI * G4UniformRand();
+    theta = acos(1.0 - G4UniformRand());
+
+     x = R * sin(theta) * cos(phi);
+     y = R * sin(theta) * sin(phi);
+     z = R * cos(theta);
+
+
+    y += 200*cm;
+
+    G4double t = G4UniformRand(); // in [0,1)
+    G4ThreeVector target = bar_start + t * (bar_end - bar_start);
+
+
+    x1 = (G4UniformRand() - 0.5) * 2.5 * cm;
+    y1 = 0.5 * cm;
+    z1 = (G4UniformRand() - 0.5) * 100. * cm;
+
+    //phi   = G4UniformRand() * 2.0 * PI;
+//    theta = G4UniformRand() * (PI / 2.0);
+
+  /*  x = x1 + 10.0 * cm * sin(theta) * cos(phi);
+    y = y1 + 10.0 * cm * cos(theta);
+    z = z1 + 10.0 * cm * sin(phi) * sin(theta);*/
+
+    G4ThreeVector pos(x, y, z);
+
+
+    G4ThreeVector mom = (target - pos);
+    if ( mom.mag2() > 0. ) mom = mom.unit();
+    else mom = G4ThreeVector(0.,0.,1.); // fallback in the improbable zero-length case
+
+
+    fParticleGun->SetParticleEnergy(3.0 * GeV);
+    fParticleGun->SetParticlePosition(pos);
+    fParticleGun->SetParticleMomentumDirection(mom);
+
+    
 }
+
 
 
 PrimaryGeneratorAction::~PrimaryGeneratorAction()

@@ -67,6 +67,7 @@ namespace B4a {
   {
 
     auto vol = step->GetPreStepPoint()->GetTouchableHandle()->GetVolume();
+  //  auto vol = step->GetPostStepPoint()->GetTouchableHandle()->GetVolume();
 
 
     //if (!vol) return;
@@ -75,14 +76,28 @@ namespace B4a {
 
     //G4cout<<"Volume "<<volName<<"\n";
 
+   // G4StepPoint* post = step->GetPostStepPoint();
+
+    //  G4VPhysicalVolume* prePV  = pre->GetPhysicalVolume();
+   // G4VPhysicalVolume* postPV = post->GetPhysicalVolume();
+
 
 
 
     if ((step->GetTrack()->GetDefinition() == G4MuonPlus::MuonPlusDefinition() ||
         step->GetTrack()->GetDefinition() == G4MuonMinus::MuonMinusDefinition())
-        && volName.find("physWorld") == std::string::npos ///Might need to change to postStep
-        && step->GetPreStepPoint()->GetStepStatus() == fGeomBoundary )
+      //  && postPV->GetName() != "physWorld" && post->GetStepStatus() == fGeomBoundary)
+       // && volName.find("physWorld") == std::string::npos
+        && step->GetPreStepPoint()->GetStepStatus() == fGeomBoundary)
     {
+
+      auto volume = step->GetPostStepPoint()->GetTouchableHandle()->GetVolume();
+
+      if (!volume)
+        return;
+
+      if (volume->GetName() == "physWorld")
+        return;
 
       G4int trackID = step->GetTrack()->GetTrackID();
       if (gPhotonMuonHelper.muonsAlreadyHit.find(trackID) == gPhotonMuonHelper.muonsAlreadyHit.end())
@@ -109,10 +124,11 @@ namespace B4a {
       if (post->GetStepStatus() == fGeomBoundary)
       {
         G4String volume = postPV->GetName();
-        if (volume == "physCapDet1" || volName == "physCapDet2")
+        if (volume == "physCapDet1" || volume == "physCapDet2")
         {
           G4double energy = step->GetTrack()->GetKineticEnergy();
           G4ThreeVector startingPosition = step->GetTrack()->GetVertexPosition();
+          G4ThreeVector endingPosition = step->GetTrack()->GetPosition();
 
           const G4Track* photon = step->GetTrack();
           G4int parentID = photon->GetParentID();
@@ -153,7 +169,11 @@ namespace B4a {
           G4int* muonFather = gPhotonMuonHelper.muonPtr[photon->GetTrackID()];
 
           if (muonFather != nullptr)
-            G4cout<<"Found Muon for this photon! " <<*gPhotonMuonHelper.muonPtr[photon->GetTrackID()]<< G4endl;
+          {
+            G4cout<<"Found Muon for this photon! " <<*gPhotonMuonHelper.muonPtr[photon->GetTrackID()] << " with position:" << endingPosition << G4endl;
+            photonCpunter.IncreasePhotonAtMuon(*muonFather);
+          }
+
 
           //
 
@@ -164,7 +184,7 @@ namespace B4a {
           photonCpunter.AddEnergy(energy);
           photonCpunter.AddVector(startingPosition);
 
-          step->GetTrack()->SetTrackStatus(fStopAndKill);
+        //  step->GetTrack()->SetTrackStatus(fStopAndKill);
         }
 
       }
