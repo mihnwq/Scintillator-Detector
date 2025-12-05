@@ -63,7 +63,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
   G4long seed = time(0);
   CLHEP::HepRandom::setTheSeed(seed * G4UniformRand());
 
-  G4int n_particle = 10;
+  G4int n_particle = 1;
   EventCounter::SetMaxMuons(n_particle);
   fParticleGun = new G4ParticleGun(n_particle);
 
@@ -143,7 +143,7 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
     man->FillNtupleDColumn(0,3, z1);
 
 }*/
-  void ParticleSourcePrinicpal(G4ParticleGun* fParticleGun)
+  /*void ParticleSourcePrinicpal(G4ParticleGun* fParticleGun)
 {
 
     const G4double PI = acos(-1.0);
@@ -180,9 +180,9 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
     //phi   = G4UniformRand() * 2.0 * PI;
 //    theta = G4UniformRand() * (PI / 2.0);
 
-  /*  x = x1 + 10.0 * cm * sin(theta) * cos(phi);
-    y = y1 + 10.0 * cm * cos(theta);
-    z = z1 + 10.0 * cm * sin(phi) * sin(theta);*/
+   // x = x1 + 10.0 * cm * sin(theta) * cos(phi);
+    //y = y1 + 10.0 * cm * cos(theta);
+    //z = z1 + 10.0 * cm * sin(phi) * sin(theta);
 
     G4ThreeVector pos(x, y, z);
 
@@ -196,7 +196,44 @@ PrimaryGeneratorAction::PrimaryGeneratorAction()
     fParticleGun->SetParticlePosition(pos);
     fParticleGun->SetParticleMomentumDirection(mom);
 
-    
+
+}
+*/
+    void ParticleSourcePrinicpal(G4ParticleGun* fParticleGun)
+{
+
+    const G4double bar_halfLength = 50.0 * cm;
+
+
+    const G4double Ly = 0.5 * cm;
+
+    // Random hit point along full bar length
+    G4double z_hit = (2*G4UniformRand() - 1) * bar_halfLength;
+    G4double x_hit = 0.0 * cm;
+    G4double y_hit = Ly;
+
+    G4ThreeVector target(x_hit, y_hit, z_hit);
+
+
+
+    const G4double PLANE = 300*cm;    // 3m × 3m sky plane
+    const G4double HEIGHT = 300*cm;   // 3m above detector
+
+   // const G4double PLANE = 80*m;    // 3m × 3m sky plane
+  //  const G4double HEIGHT = 100*cm;   // 3m above detector
+
+    // Uniform square above detector
+    G4double x0 = (G4UniformRand() - 0.5) * PLANE;
+    G4double z0 = (G4UniformRand() - 0.5) * PLANE;
+    G4double y0 = HEIGHT;
+
+    G4ThreeVector pos(x0, y0, z0);
+
+    G4ThreeVector mom = (target - pos).unit();
+
+    fParticleGun->SetParticleEnergy(3.0 * GeV);
+    fParticleGun->SetParticlePosition(pos);
+    fParticleGun->SetParticleMomentumDirection(mom);
 }
 
 

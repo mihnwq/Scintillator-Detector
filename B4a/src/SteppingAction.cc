@@ -105,7 +105,8 @@ namespace B4a {
         gPhotonMuonHelper.muonsAlreadyHit.insert(trackID);
         G4ThreeVector pos = step->GetPreStepPoint()->GetPosition(); ///This too
         photonCpunter.AddMuon(pos);
-        G4cout << "Muon first hit a volume at: " << pos << " TrackID: " << trackID << G4endl;
+        photonCpunter.AddMuonData(pos);
+       // G4cout << "Muon first hit a volume at: " << pos << " TrackID: " << trackID << G4endl;
       }
 
 
@@ -184,7 +185,7 @@ namespace B4a {
           photonCpunter.AddEnergy(energy);
           photonCpunter.AddVector(startingPosition);
 
-        //  step->GetTrack()->SetTrackStatus(fStopAndKill);
+          step->GetTrack()->SetTrackStatus(fStopAndKill);
         }
 
       }

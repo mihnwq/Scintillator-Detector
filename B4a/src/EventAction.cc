@@ -82,16 +82,19 @@ void EventAction::EndOfEventAction(const G4Event* event)
 
   // Salvezi datele (presupunând că ai creat coloanele 4 și 5 în RunAction)
 
-  /*G4double photonCount = EventCounter::GetCounter();
-  G4double energyCount = EventCounter::GetEnergy();
-  std::vector<G4ThreeVector> photonStartingPositions = EventCounter::GetPhotonStartingPositions();*/
+  G4int photonCount = EventCounter::GetCounter();
 
-  G4double photonCount = EventCounter::GetMaxPhotonCount();
+  EventCounter::AddPhotonCOunt(photonCount);
+
+  //G4double energyCount = EventCounter::GetEnergy();
+  //std::vector<G4ThreeVector> photonStartingPositions = EventCounter::GetPhotonStartingPositions();
+
+ /* G4double photonCount = EventCounter::GetMaxPhotonCount();
   G4double energyCount = EventCounter::GetMaxEnergy();
-  std::vector<G4ThreeVector> photonStartingPositions = EventCounter::GetPhotonStartingPositionsMax();
+  std::vector<G4ThreeVector> photonStartingPositions = EventCounter::GetPhotonStartingPositionsMax();*/
 
-  G4int maxPhotonsForMuon = EventCounter::GetMaxPhotonForMuon();
-  G4ThreeVector maxMuonWithPhotonsPosition = EventCounter::GetGreediestMeuonPosition();
+ // G4int maxPhotonsForMuon = EventCounter::GetMaxPhotonForMuon();
+  //G4ThreeVector maxMuonWithPhotonsPosition = EventCounter::GetGreediestMeuonPosition();
 
  // G4cout<<"Here we have the maxPhotons for muon: " << maxPhotonsForMuon << " With his initial position: "<< maxMuonWithPhotonsPosition << G4endl;
 
@@ -99,25 +102,49 @@ void EventAction::EndOfEventAction(const G4Event* event)
   //G4cout<<"Photon count: "<<photonCount<<" have been detected "<< "with energy levels on: "<< energyCount<<G4endl;
 
 
-  analysisManager->FillNtupleDColumn(0,4, photonCount);
+ // analysisManager->FillNtupleDColumn(0,4, photonCount);
+
+
+  for (int i = 0; i < EventCounter::GetNumberOfEvents(); i++)
+  {
+    analysisManager->FillNtupleDColumn(0,4, EventCounter::GetCountAt(i));
+    analysisManager->AddNtupleRow(0);
+  }
 
   G4cout<<"Are this many Photons this run:" << EventCounter::GetCounter()<<G4endl;
 
-  analysisManager->FillNtupleDColumn(0,5, energyCount);
+ /* analysisManager->FillNtupleDColumn(0,5, energyCount);
 
   analysisManager->FillNtupleDColumn(0,6, maxPhotonsForMuon);
   analysisManager->FillNtupleDColumn(0,7, maxMuonWithPhotonsPosition.x());
   analysisManager->FillNtupleDColumn(0,8, maxMuonWithPhotonsPosition.y());
-  analysisManager->FillNtupleDColumn(0,9, maxMuonWithPhotonsPosition.z());
+  analysisManager->FillNtupleDColumn(0,9, maxMuonWithPhotonsPosition.z());*/
 
   analysisManager->AddNtupleRow(0);
-  AddVector(1, 2, 3, analysisManager, photonStartingPositions);
+ // AddVector(1, 2, 3, analysisManager, photonStartingPositions);
 
+    auto eventID = event->GetEventID();
+   // auto eventID = G4RunManager::GetRunManager()->GetCurrentEvent()->GetEventID();
+
+    G4cout<<"Well " << EventCounter::muonDataPerEvent.size()<<G4endl;
+
+    for (int i = 0; i < EventCounter::GetTotalMeuons(); i++)
+    {
+
+        EventCounter::SetEventAt(eventID, i);
+
+        analysisManager->FillNtupleIColumn(1, 0, eventID);     // event ID
+        analysisManager->FillNtupleDColumn(1, 1, EventCounter::GetMeuonAT(i).first.x());
+        analysisManager->FillNtupleDColumn(1, 2, EventCounter::GetMeuonAT(i).first.y());
+        analysisManager->FillNtupleDColumn(1, 3, EventCounter::GetMeuonAT(i).first.z());
+
+        analysisManager->AddNtupleRow(1);
+    }
 
 
   // Print per event (modulo n)
   //
-  auto eventID = event->GetEventID();
+
   auto printModulo = G4RunManager::GetRunManager()->GetPrintProgress();
   if ((printModulo > 0) && (eventID % printModulo == 0)) {
     G4cout << "   Absorber: total energy: " << std::setw(7) << G4BestUnit(fEnergyAbs, "Energy")
@@ -128,9 +155,11 @@ void EventAction::EndOfEventAction(const G4Event* event)
 
     G4cout << "--> End of event " << eventID << "\n" << G4endl;
   }
+
+  //  EventCounter::GetToNextEvent();
 }
 
-  void EventAction::AddVector(
+  /*void EventAction::AddVector(
     G4int col_px,
     G4int col_py,
     G4int col_pz,
@@ -149,7 +178,7 @@ void EventAction::EndOfEventAction(const G4Event* event)
     analysisManager->AddNtupleRow(1);
   }
 }
-
+*/
 
 //....oooOO0OOooo........oooOO0OOooo........oooOO0OOooo........oooOO0OOooo.....
 

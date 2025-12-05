@@ -1018,8 +1018,7 @@ G4VPhysicalVolume* DetectorConstruction::Construct()
     simpleBoxVisAtt5->SetVisibility(true);
 
 
-    /*wall_lv->SetVisAttributes(transp_white);
-    Cwall1_lv->SetVisAttributes(transp_white);*/
+
 
     /*
     punem numele volumului logic ->SetVisAttributes(daca pui culoare ai automat true, sau pui simpleBoxVisAtt de ex)

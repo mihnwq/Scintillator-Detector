@@ -76,18 +76,18 @@ RunAction::RunAction()
   analysisManager->CreateNtupleDColumn("Lgap");
 
   analysisManager->CreateNtupleDColumn("PhotonCount");
-  analysisManager->CreateNtupleDColumn("PhotonEnergy");
+ // analysisManager->CreateNtupleDColumn("PhotonEnergy");
 
-  analysisManager->CreateNtupleDColumn("MaxPhotonsForMuon");
-  analysisManager->CreateNtupleDColumn("GreediestMuonX");
-  analysisManager->CreateNtupleDColumn("GreediestMuonY");
-  analysisManager->CreateNtupleDColumn("GreediestMuonZ");
+  //analysisManager->CreateNtupleDColumn("MaxPhotonsForMuon");
+  //analysisManager->CreateNtupleDColumn("GreediestMuonX");
+  //analysisManager->CreateNtupleDColumn("GreediestMuonY");
+  //analysisManager->CreateNtupleDColumn("GreediestMuonZ");
 
   analysisManager->FinishNtuple(0);
 
 
   // Ntuple 1 – Photon positions
-  analysisManager->CreateNtuple("PhotonData", "Photon positions");
+  analysisManager->CreateNtuple("ParticleData", "Photon positions");
 
   analysisManager->CreateNtupleIColumn("eventID");   // <-- IMPORTANT!!
   analysisManager->CreateNtupleDColumn("px");

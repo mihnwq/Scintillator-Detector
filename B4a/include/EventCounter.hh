@@ -23,6 +23,12 @@ public:
    static std::vector<std::pair<G4int, G4ThreeVector>> muonData;
     static std::pair<G4int, G4ThreeVector> muonWithMaxPhotons;
    static G4int maxMuons;
+
+    static std::vector<G4int> photonCounter;
+    static std::vector<G4ThreeVector> muonPositions;
+    static std::vector<std::pair<G4ThreeVector,G4int>> muonDataPerEvent;
+    // static std::vector<G4ThreeVector , G4int> muonPositions;
+
     EventCounter() {
 
     }
@@ -34,6 +40,7 @@ public:
         energy = 0;
         photonStartingPositions.clear();
         muonData.clear();
+     //   muonDataPerEvent.clear();
         //maxCOunter and maxEngery and the vectorMax never need to reset.
     }
 
@@ -41,6 +48,35 @@ public:
     {
         muonData.push_back({0,hitPosition});
 
+    }
+
+    static void AddPhotonCOunt(G4int number) {
+        photonCounter.push_back(number);
+    }
+
+    static G4int GetCountAt(G4int event) {
+        return photonCounter[event];
+    }
+
+    static G4int GetNumberOfEvents() {
+        return photonCounter.size();
+    }
+
+
+    static void AddMuonData(G4ThreeVector hitPosition) {
+        muonDataPerEvent.push_back({hitPosition, 0});
+    }
+
+    static std::pair<G4ThreeVector,G4int> GetMeuonAT(G4int index) {
+        return muonDataPerEvent[index];
+    }
+
+    static void SetEventAt(G4int eventIndex, G4int index) {
+        muonDataPerEvent[index].second = eventIndex;
+    }
+
+    static G4int GetNumberOfMeuons() {
+        return muonData.size();
     }
 
     static void IncreasePhotonAtMuon(G4int index)
@@ -113,6 +149,10 @@ public:
     static void SetPhotonsStartingPositions(std::vector<G4ThreeVector> v)
     {
         photonStartingPositions = v;
+    }
+
+    static G4int GetTotalMeuons() {
+        return muonDataPerEvent.size();
     }
 
     ///For these to work one must call them at every end of event!
